@@ -20,7 +20,14 @@ type Ticket struct {
 	Status string `json:"status"`
 }
 
+// I might not need this
 type AuthRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type TicketRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Ticket   Ticket `json:"ticket"`
 }
