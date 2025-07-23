@@ -90,6 +90,52 @@ func AssignTicketToUser(db *sql.DB, username string, newTicket models.Ticket) er
 	return nil
 }
 
+func DeleteTicketByTitle(db *sql.DB, username string, title string) error {
+	// fetch user data from db
+	userData, err := FetchUserData(db, username)
+	if err != nil {
+		return err
+	}
+
+	// filter out the ticket with the matching title
+	found := false
+	updatedTickets := make([]models.Ticket, 0)
+	for _, ticket := range userData.Tickets {
+		if ticket.Title == title {
+			found = true
+			continue // skip the ticket we're deleting
+		}
+		updatedTickets = append(updatedTickets, ticket)
+	}
+
+	if !found {
+		return fmt.Errorf("ticket with title %q not found", title)
+	}
+
+	userData.Tickets = updatedTickets
+
+	// marshal updated data
+	updatedBytes, err := json.Marshal(userData)
+	if err != nil {
+		return fmt.Errorf("failed to marshal updated data: %w", err)
+	}
+
+	// write back to the database
+	queryUpdate := `
+		UPDATE users
+		SET data = $1
+		WHERE username = $2
+	`
+
+	_, err = db.Exec(queryUpdate, updatedBytes, username)
+	if err != nil {
+		return fmt.Errorf("failed to update user data: %w", err)
+	}
+
+	return nil
+}
+
+
 func UpdateTicketStatus(db *sql.DB, username string, title string, newStatus string) error {
 	// fetch user data from db
 	userData, err := FetchUserData(db, username)
