@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"bzdev/models"
+	"encoding/json"
 )
 
 func ConnectDB() (*sql.DB, error) {
@@ -32,6 +33,102 @@ func CheckIfUserExists(db *sql.DB, username string) (bool, error) {
 		return false, err
 	}
 	return exists, nil
+}
+
+func FetchUserData(db *sql.DB, username string) (models.UserData, error) {
+	query := `
+		SELECT data
+		FROM users
+		WHERE username = $1
+	`
+
+	var dataBytes []byte
+	var userData models.UserData
+
+	err := db.QueryRow(query, username).Scan(&dataBytes)
+	if err != nil {
+		return userData, fmt.Errorf("query error: %w", err)
+	}
+
+	if len(dataBytes) > 0 {
+		if err := json.Unmarshal(dataBytes, &userData); err != nil {
+			return userData, fmt.Errorf("failed to unmarshal JSON: %w", err)
+		}
+	}
+
+	return userData, nil
+}
+
+func AssignTicketToUser(db *sql.DB, username string, newTicket models.Ticket) error {
+	// fetch user data from db
+	userData, err := FetchUserData(db, username)
+	if err != nil {
+		return err
+	}
+
+	// append the new ticket
+	userData.Tickets = append(userData.Tickets, newTicket)
+
+	// marshal updated data
+	updatedBytes, err := json.Marshal(userData)
+	if err != nil {
+		return fmt.Errorf("failed to marshal updated data: %w", err)
+	}
+
+	// write back to the database
+	queryUpdate := `
+		UPDATE users
+		SET data = $1
+		WHERE username = $2
+	`
+
+	_, err = db.Exec(queryUpdate, updatedBytes, username)
+	if err != nil {
+		return fmt.Errorf("failed to update user data: %w", err)
+	}
+
+	return nil
+}
+
+func UpdateTicketStatus(db *sql.DB, username string, title string, newStatus string) error {
+	// fetch user data from db
+	userData, err := FetchUserData(db, username)
+	if err != nil {
+		return err
+	}
+
+	// find and update the ticket by title
+	found := false
+	for i := range userData.Tickets {
+		if userData.Tickets[i].Title == title {
+			userData.Tickets[i].Status = newStatus
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		return fmt.Errorf("ticket with title %q not found", title)
+	}
+
+	// marshal the updated data
+	updatedBytes, err := json.Marshal(userData)
+	if err != nil {
+		return fmt.Errorf("marshal error: %w", err)
+	}
+
+	queryUpdate := `
+		UPDATE users
+		SET data = $1
+		WHERE username = $2
+	`
+
+	_, err = db.Exec(queryUpdate, updatedBytes, username)
+	if err != nil {
+		return fmt.Errorf("update error: %w", err)
+	}
+
+	return nil
 }
 
 func InsertUser(db *sql.DB, username string, password string, diamonds int) error {
