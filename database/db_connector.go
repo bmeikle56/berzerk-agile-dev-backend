@@ -26,7 +26,7 @@ func ConnectDB() (*sql.DB, error) {
 
 func CheckIfUserExists(db *sql.DB, username string) (bool, error) {
 	var exists bool
-	query := `SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)`
+	query := `SELECT EXISTS(SELECT 1 FROM bzdevusers WHERE username = $1)`
 
 	err := db.QueryRow(query, username).Scan(&exists)
 	if err != nil {
@@ -38,7 +38,7 @@ func CheckIfUserExists(db *sql.DB, username string) (bool, error) {
 func FetchUserData(db *sql.DB, username string) (models.UserData, error) {
 	query := `
 		SELECT data
-		FROM users
+		FROM bzdevusers
 		WHERE username = $1
 	`
 
@@ -77,7 +77,7 @@ func AssignTicketToUser(db *sql.DB, username string, newTicket models.Ticket) er
 
 	// write back to the database
 	queryUpdate := `
-		UPDATE users
+		UPDATE bzdevusers
 		SET data = $1
 		WHERE username = $2
 	`
@@ -122,7 +122,7 @@ func DeleteTicketByTitle(db *sql.DB, username string, title string) error {
 
 	// write back to the database
 	queryUpdate := `
-		UPDATE users
+		UPDATE bzdevusers
 		SET data = $1
 		WHERE username = $2
 	`
@@ -164,7 +164,7 @@ func UpdateTicketStatus(db *sql.DB, username string, title string, newStatus str
 	}
 
 	queryUpdate := `
-		UPDATE users
+		UPDATE bzdevusers
 		SET data = $1
 		WHERE username = $2
 	`
@@ -177,12 +177,13 @@ func UpdateTicketStatus(db *sql.DB, username string, title string, newStatus str
 	return nil
 }
 
-func InsertUser(db *sql.DB, username string, password string, diamonds int) error {
+func InsertUser(db *sql.DB, username string, password string) error {
 	query := `
-		INSERT INTO users (username, password, diamonds)
+		INSERT INTO bzdevusers (username, password, data)
 		VALUES ($1, $2, $3)
 	`
-	_, err := db.Exec(query, username, password, diamonds)
+	initialData := `{}`
+	_, err := db.Exec(query, username, password, initialData)
 	if err != nil {
 		return fmt.Errorf("InsertUser error: %w", err)
 	}
@@ -193,7 +194,7 @@ func InsertUser(db *sql.DB, username string, password string, diamonds int) erro
 func FetchPasswordForUser(db *sql.DB, username string) (string, error) {
 	query := `
 		SELECT password
-		FROM users
+		FROM bzdevusers
 		WHERE username = $1
 	`
 
@@ -212,7 +213,7 @@ func FetchPasswordForUser(db *sql.DB, username string) (string, error) {
 func FetchUser(db *sql.DB, username string) (*models.User, error) {
 	query := `
 		SELECT id, username, password
-		FROM users
+		FROM bzdevusers
 		WHERE username = $1
 	`
 
