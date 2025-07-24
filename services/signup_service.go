@@ -21,6 +21,6 @@ func SignupService(username string, password string) error {
 	} else if userExists {
 		return fmt.Errorf("user already exists")
 	}
-	err = database.InsertUser(db, username, string(hashed), 100)
+	err = database.InsertUser(db, username, string(hashed))
 	return err
 }
