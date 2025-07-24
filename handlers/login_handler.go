@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"os"
 	"github.com/gin-gonic/gin"
 	"bzdev/services"
 	"bzdev/models"
@@ -25,10 +24,8 @@ func LoginHandler(c *gin.Context) {
 			"error": err.Error(),
 		})
 	} else {
-		authToken := os.Getenv("AUTH_TOKEN")
 		c.JSON(http.StatusOK, gin.H{
 			"response": "login successful",
-			"token": authToken,
 		})
 	}
 }
