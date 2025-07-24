@@ -31,3 +31,11 @@ type TicketRequest struct {
 	Password string `json:"password"`
 	Ticket   Ticket `json:"ticket"`
 }
+
+type UpdateStatusRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Title    string `json:"title"`
+	Status   string `json:"status"`
+}
+
