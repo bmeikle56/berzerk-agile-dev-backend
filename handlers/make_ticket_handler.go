@@ -8,15 +8,18 @@ import (
 )
 
 func MakeTicketHandler(c *gin.Context) {
-	var req models.TicketRequest
+	var req models.NewTicketRequest
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid JSON",
 		})
 		return
 	}
+
+	// convert NewTicket to Ticket and add default status
+	ticket := req.Ticket.ToTicketWithStatus("new")
 	
-	err := services.MakeTicketService(req.Username, req.Password, req.Ticket)
+	err := services.MakeTicketService(req.Username, req.Password, ticket)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
