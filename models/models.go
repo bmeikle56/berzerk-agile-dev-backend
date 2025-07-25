@@ -20,16 +20,35 @@ type Ticket struct {
 	Status string `json:"status"`
 }
 
-// I might not need this
+// a status-less ticket
+type NewTicket struct {
+	Repo   string `json:"repo"`
+	Tag    string `json:"tag"`
+	Title  string `json:"title"`
+	Dev    string `json:"dev"` // remove later...
+	Notes  string `json:"notes"`
+}
+
+func (nt NewTicket) ToTicketWithStatus(status string) Ticket {
+	return Ticket{
+		Repo:   nt.Repo,
+		Tag:    nt.Tag,
+		Title:  nt.Title,
+		Dev:    nt.Dev,
+		Notes:  nt.Notes,
+		Status: status,
+	}
+}
+
 type AuthRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-type TicketRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Ticket   Ticket `json:"ticket"`
+type NewTicketRequest struct {
+	Username string    `json:"username"`
+	Password string    `json:"password"`
+	Ticket   NewTicket `json:"ticket"`
 }
 
 type UpdateStatusRequest struct {
