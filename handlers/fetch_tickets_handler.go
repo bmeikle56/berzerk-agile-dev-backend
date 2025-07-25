@@ -16,7 +16,7 @@ func FetchTicketsHandler(c *gin.Context) {
 		return
 	}
 	
-	tickets, err := services.FetchTicketsService(req.Username)
+	userData, err := services.FetchTicketsService(req.Username)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -26,7 +26,7 @@ func FetchTicketsHandler(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"response": "fetch tickets successful",
-			"tickets": tickets,
+			"tickets": userData.Tickets,
 		})
 	}
 }
