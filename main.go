@@ -21,7 +21,8 @@ func main() {
 
 	r.POST("/login", middleware.AuthMiddleware(),handlers.LoginHandler)
 	r.POST("/signup", middleware.AuthMiddleware(),handlers.SignupHandler)
-	r.POST("/maketicket", middleware.AuthMiddleware(),handlers.MakeTicketHandler)
-	r.POST("/updatestatus", middleware.AuthMiddleware(),handlers.UpdateStatusHandler)
+	r.POST("/make", middleware.AuthMiddleware(),handlers.MakeTicketHandler)
+	r.POST("/update", middleware.AuthMiddleware(),handlers.UpdateStatusHandler)
+	r.POST("/fetch", middleware.AuthMiddleware(),handlers.FetchTicketsHandler)
 	r.Run(":" + port)
 }

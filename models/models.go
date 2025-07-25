@@ -51,6 +51,10 @@ type NewTicketRequest struct {
 	Ticket   NewTicket `json:"ticket"`
 }
 
+type FetchTicketsRequest struct {
+	Username string `json:"username"`
+}
+
 type UpdateStatusRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
