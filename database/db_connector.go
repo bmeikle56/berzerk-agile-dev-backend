@@ -135,6 +135,42 @@ func DeleteTicketByTitle(db *sql.DB, username string, title string) error {
 	return nil
 }
 
+func DeleteAllTickets(db *sql.DB, username string) error {
+	// fetch user data from db
+	userData, err := FetchUserData(db, username)
+	if err != nil {
+		return err
+	}
+
+	// check if there are any tickets to delete
+	if len(userData.Tickets) == 0 {
+		return fmt.Errorf("no tickets found for user %q", username)
+	}
+
+	// clear the tickets slice
+	userData.Tickets = []models.Ticket{}
+
+	// marshal updated data
+	updatedBytes, err := json.Marshal(userData)
+	if err != nil {
+		return fmt.Errorf("failed to marshal updated data: %w", err)
+	}
+
+	// write back to the database
+	queryUpdate := `
+		UPDATE bzdevusers
+		SET data = $1
+		WHERE username = $2
+	`
+
+	_, err = db.Exec(queryUpdate, updatedBytes, username)
+	if err != nil {
+		return fmt.Errorf("failed to update user data: %w", err)
+	}
+
+	return nil
+}
+
 
 func UpdateTicketStatus(db *sql.DB, username string, title string, newStatus string) error {
 	// fetch user data from db
