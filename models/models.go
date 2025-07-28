@@ -55,6 +55,11 @@ type FetchTicketsRequest struct {
 	Username string `json:"username"`
 }
 
+type DeleteTicketRequest struct {
+	Username string `json:"username"`
+	Title    string `json:"title"`
+}
+
 type UpdateStatusRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`

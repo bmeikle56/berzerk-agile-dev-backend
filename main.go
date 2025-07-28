@@ -36,5 +36,7 @@ func main() {
 	r.POST("/make", middleware.AuthMiddleware(),handlers.MakeTicketHandler)
 	r.POST("/update", middleware.AuthMiddleware(),handlers.UpdateStatusHandler)
 	r.POST("/fetch", middleware.AuthMiddleware(),handlers.FetchTicketsHandler)
+	r.POST("/delete", middleware.AuthMiddleware(),handlers.DeleteTicketHandler)
+	r.POST("/clear", middleware.AuthMiddleware(),handlers.ClearTicketsHandler)
 	r.Run(":" + port)
 }
