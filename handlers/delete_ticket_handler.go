@@ -20,12 +20,12 @@ func DeleteTicketHandler(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"response": "failed to clear tickets",
+			"response": "failed to delete ticket",
 			"error": err.Error(),
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"response": "clear tickets successful",
+			"response": "delete ticket successful",
 		})
 	}
 }
