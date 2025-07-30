@@ -6,10 +6,7 @@ import (
 )
 
 func LoginService(username string, password string) error {
-	db, err := database.ConnectDB()
-	if err != nil {
-		return err
-	}
+	db := database.GetDB()
 	hashedPassword, err := database.FetchPasswordForUser(db, username)
 	if err != nil {
 		return err

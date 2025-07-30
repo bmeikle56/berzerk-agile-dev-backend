@@ -5,12 +5,9 @@ import (
 )
 
 func ClearTicketsService(username string) error {
-	db, err := database.ConnectDB()
-	if err != nil {
-		return err
-	}
+	db := database.GetDB()
 
-	err = database.DeleteAllTickets(db, username)
+	err := database.DeleteAllTickets(db, username)
 	if err != nil {
 		return err
 	}

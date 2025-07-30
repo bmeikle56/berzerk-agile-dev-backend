@@ -11,10 +11,7 @@ func SignupService(username string, password string) error {
 	if err != nil {
 		return err
 	}
-	db, err := database.ConnectDB()
-	if err != nil {
-		return err
-	}
+	db := database.GetDB()
 	userExists, err := database.CheckIfUserExists(db, username)
 	if err != nil {
 		return err
