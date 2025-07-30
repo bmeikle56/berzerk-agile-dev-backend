@@ -10,9 +10,6 @@ func MakeTicketService(
 	password string,
 	newTicket models.Ticket,
 ) error {
-	db, err := database.ConnectDB()
-	if err != nil {
-		return err
-	}
+	db := database.GetDB()
 	return database.AssignTicketToUser(db, username, newTicket)
 }

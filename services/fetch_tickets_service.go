@@ -6,10 +6,7 @@ import (
 )
 
 func FetchTicketsService(username string) (models.UserData, error) {
-	db, err := database.ConnectDB()
-	if err != nil {
-		return models.UserData{}, err
-	}
+	db := database.GetDB()
 
 	tickets, err := database.FetchUserData(db, username)
 	if err != nil {

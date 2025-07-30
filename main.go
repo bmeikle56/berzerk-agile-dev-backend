@@ -6,12 +6,25 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
 	"bzdev/handlers"
+	"bzdev/database"
+	"log"
 	"bzdev/middleware"
 )
 
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	godotenv.Load()
+
+	err := database.ConnectDB()
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
+
+	defer func() {
+		if err := database.GetDB().Close(); err != nil {
+			log.Printf("error closing DB: %v", err)
+		}
+	}()
 
 	port := os.Getenv("PORT")
 	if port == "" {
