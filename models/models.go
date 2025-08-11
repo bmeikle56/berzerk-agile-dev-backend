@@ -68,6 +68,7 @@ type DeleteTicketRequest struct {
 type UpdateStatusRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Repo     string `json:"repo"`
 	Title    string `json:"title"`
 	Status   string `json:"status"`
 }

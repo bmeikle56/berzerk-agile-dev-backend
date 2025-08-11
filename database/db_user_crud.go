@@ -181,7 +181,7 @@ func DeleteAllTickets(db *sql.DB, username string) error {
 	return nil
 }
 
-func UpdateTicketStatus(db *sql.DB, username string, title string, newStatus string) error {
+func UpdateTicketStatusByRepo(db *sql.DB, username string, repoName string, title string, newStatus string) error {
 	// fetch user data from db
 	userData, err := FetchUserData(db, username)
 	if err != nil {
@@ -190,31 +190,32 @@ func UpdateTicketStatus(db *sql.DB, username string, title string, newStatus str
 
 	found := false
 
-	// search through all repos and their tickets
+	// search for the specific repo
 	for repoIndex := range userData.Repos {
-		for ticketIndex := range userData.Repos[repoIndex].Tickets {
-			if userData.Repos[repoIndex].Tickets[ticketIndex].Title == title {
-				userData.Repos[repoIndex].Tickets[ticketIndex].Status = newStatus
-				found = true
-				break
+		if userData.Repos[repoIndex].Repo == repoName {
+			// search tickets inside this repo
+			for ticketIndex := range userData.Repos[repoIndex].Tickets {
+				if userData.Repos[repoIndex].Tickets[ticketIndex].Title == title {
+					userData.Repos[repoIndex].Tickets[ticketIndex].Status = newStatus
+					found = true
+					break
+				}
 			}
-		}
-		if found {
-			break
+			break // stop after checking the matching repo
 		}
 	}
 
 	if !found {
-		return fmt.Errorf("ticket with title %q not found", title)
+		return fmt.Errorf("ticket with title %q in repo %q not found", title, repoName)
 	}
 
-	// marshal the updated data
+	// marshal updated data
 	updatedBytes, err := json.Marshal(userData)
 	if err != nil {
 		return fmt.Errorf("marshal error: %w", err)
 	}
 
-	// update database
+	// update DB
 	queryUpdate := `
 		UPDATE bzdevusers
 		SET data = $1
