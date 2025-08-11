@@ -26,7 +26,7 @@ func FetchTicketsHandler(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"response": "fetch tickets successful",
-			"tickets": userData.Tickets,
+			"repos": userData.Repos,
 		})
 	}
 }
