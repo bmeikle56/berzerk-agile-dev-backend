@@ -136,6 +136,51 @@ func DeleteTicketByTitle(db *sql.DB, username string, title string) error {
 	return nil
 }
 
+func DeleteRepoByName(db *sql.DB, username, repoName string) error {
+	// fetch user data
+	userData, err := FetchUserData(db, username)
+	if err != nil {
+		return err
+	}
+
+	// filter out the repo to delete
+	newRepos := make([]models.Repo, 0, len(userData.Repos))
+	found := false
+	for _, repo := range userData.Repos {
+		if repo.Repo == repoName {
+			found = true
+			continue // skip this repo
+		}
+		newRepos = append(newRepos, repo)
+	}
+
+	if !found {
+		return fmt.Errorf("repo %q not found for user %q", repoName, username)
+	}
+
+	userData.Repos = newRepos
+
+	// marshal updated data
+	updatedBytes, err := json.Marshal(userData)
+	if err != nil {
+		return fmt.Errorf("failed to marshal updated user data: %w", err)
+	}
+
+	// update DB
+	query := `
+		UPDATE bzdevusers
+		SET data = $1
+		WHERE username = $2
+	`
+	_, err = db.Exec(query, updatedBytes, username)
+	if err != nil {
+		return fmt.Errorf("failed to update user data in DB: %w", err)
+	}
+
+	return nil
+}
+
+
 func DeleteAllTickets(db *sql.DB, username string) error {
 	// fetch user data from db
 	userData, err := FetchUserData(db, username)
