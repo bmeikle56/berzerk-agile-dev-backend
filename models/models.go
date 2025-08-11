@@ -8,6 +8,11 @@ type User struct {
 }
 
 type UserData struct {
+	Repos []Repo `json:"repos"`
+}
+
+type Repo struct {
+	Repo    string   `json:"repo"`
 	Tickets []Ticket `json:"tickets"`
 }
 

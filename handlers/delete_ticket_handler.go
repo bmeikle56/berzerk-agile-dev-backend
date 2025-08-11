@@ -29,3 +29,24 @@ func DeleteTicketHandler(c *gin.Context) {
 		})
 	}
 }
+
+/**
+Only one active ticket per repo
+{
+  bz-dev {
+	  ticket-id  (green if active)
+		ticket-id2
+		ticket-id3
+	}
+	bz-dev-backend {
+	  ticket-id  (green if active)
+		ticket-id2
+		ticket-id3
+	}
+	braeden-meikle-site {
+	  ticket-id  (green if active)
+		ticket-id2
+		ticket-id3
+	}
+}
+*/
