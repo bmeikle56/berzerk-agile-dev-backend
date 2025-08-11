@@ -44,12 +44,13 @@ func main() {
     AllowCredentials: true,
 }))
 
-	r.POST("/login", middleware.AuthMiddleware(),handlers.LoginHandler)
-	r.POST("/signup", middleware.AuthMiddleware(),handlers.SignupHandler)
-	r.POST("/make", middleware.AuthMiddleware(),handlers.MakeTicketHandler)
-	r.POST("/update", middleware.AuthMiddleware(),handlers.UpdateStatusHandler)
-	r.POST("/fetch", middleware.AuthMiddleware(),handlers.FetchTicketsHandler)
-	r.POST("/delete", middleware.AuthMiddleware(),handlers.DeleteTicketHandler)
-	r.POST("/clear", middleware.AuthMiddleware(),handlers.ClearTicketsHandler)
+	r.POST("/login",  middleware.AuthMiddleware(), handlers.LoginHandler)
+	r.POST("/signup", middleware.AuthMiddleware(), handlers.SignupHandler)
+	r.POST("/make",   middleware.AuthMiddleware(), handlers.MakeTicketHandler)
+	r.POST("/update", middleware.AuthMiddleware(), handlers.UpdateStatusHandler)
+	r.POST("/fetch",  middleware.AuthMiddleware(), handlers.FetchTicketsHandler)
+	r.POST("/delete", middleware.AuthMiddleware(), handlers.DeleteTicketHandler)
+	r.POST("/clear",  middleware.AuthMiddleware(), handlers.ClearTicketsHandler)
+	r.POST("/kill",   middleware.AuthMiddleware(), handlers.KillRepoHandler)
 	r.Run(":" + port)
 }

@@ -7,8 +7,8 @@ import (
 	"bzdev/models"
 )
 
-func DeleteTicketHandler(c *gin.Context) {
-	var req models.DeleteTicketRequest
+func KillRepoHandler(c *gin.Context) {
+	var req models.KillRepoRequest
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid JSON",
@@ -16,16 +16,16 @@ func DeleteTicketHandler(c *gin.Context) {
 		return
 	}
 	
-	err := services.DeleteTicketService(req.Username, req.Title)
+	err := services.KillRepoService(req.Username, req.Repo)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"response": "failed to delete ticket",
+			"response": "failed to kill repo",
 			"error": err.Error(),
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"response": "delete ticket successful",
+			"response": "repo killed successful",
 		})
 	}
 }
