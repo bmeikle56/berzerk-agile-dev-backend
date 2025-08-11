@@ -65,6 +65,11 @@ type DeleteTicketRequest struct {
 	Title    string `json:"title"`
 }
 
+type KillRepoRequest struct {
+	Username string `json:"username"`
+	Repo     string `json:"repo"`
+}
+
 type UpdateStatusRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`

@@ -51,5 +51,6 @@ func main() {
 	r.POST("/fetch", middleware.AuthMiddleware(),handlers.FetchTicketsHandler)
 	r.POST("/delete", middleware.AuthMiddleware(),handlers.DeleteTicketHandler)
 	r.POST("/clear", middleware.AuthMiddleware(),handlers.ClearTicketsHandler)
+	r.POST("/kill", middleware.AuthMiddleware(),handlers.KillRepoHandler)
 	r.Run(":" + port)
 }

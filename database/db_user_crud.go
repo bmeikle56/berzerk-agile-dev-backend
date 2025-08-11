@@ -136,14 +136,14 @@ func DeleteTicketByTitle(db *sql.DB, username string, title string) error {
 	return nil
 }
 
-func DeleteRepoByName(db *sql.DB, username, repoName string) error {
+func KillRepoByName(db *sql.DB, username, repoName string) error {
 	// fetch user data
 	userData, err := FetchUserData(db, username)
 	if err != nil {
 		return err
 	}
 
-	// filter out the repo to delete
+	// filter out the repo to kill
 	newRepos := make([]models.Repo, 0, len(userData.Repos))
 	found := false
 	for _, repo := range userData.Repos {
