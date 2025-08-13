@@ -16,7 +16,7 @@ func DeleteTicketHandler(c *gin.Context) {
 		return
 	}
 	
-	err := services.DeleteTicketService(req.Username, req.Title)
+	err := services.DeleteTicketService(req.Username, req.Key)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

@@ -4,10 +4,10 @@ import (
 	"bzdev/database"
 )
 
-func DeleteTicketService(username string, title string) error {
+func DeleteTicketService(username string, key string) error {
 	db := database.GetDB()
 
-	err := database.DeleteTicketByTitle(db, username, title)
+	err := database.DeleteTicketByKey(db, username, key)
 	if err != nil {
 		return err
 	}
