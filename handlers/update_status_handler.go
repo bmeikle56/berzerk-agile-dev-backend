@@ -16,7 +16,7 @@ func UpdateStatusHandler(c *gin.Context) {
 		return
 	}
 	
-	err := services.UpdateStatusService(req.Username, req.Repo, req.Title, req.Status)
+	err := services.UpdateStatusService(req.Username, req.Repo, req.Key, req.Status)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

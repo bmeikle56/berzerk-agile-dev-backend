@@ -19,7 +19,7 @@ type Repo struct {
 type Ticket struct {
 	Repo   string `json:"repo"`
 	Tag    string `json:"tag"`
-	Title  string `json:"title"`
+	Key    string `json:"key"`
 	Dev    string `json:"dev"`
 	Notes  string `json:"notes"`
 	Status string `json:"status"`
@@ -29,7 +29,7 @@ type Ticket struct {
 type NewTicket struct {
 	Repo   string `json:"repo"`
 	Tag    string `json:"tag"`
-	Title  string `json:"title"`
+	Key    string `json:"key"`
 	Dev    string `json:"dev"` // remove later...
 	Notes  string `json:"notes"`
 }
@@ -38,7 +38,7 @@ func (nt NewTicket) ToTicketWithStatus(status string) Ticket {
 	return Ticket{
 		Repo:   nt.Repo,
 		Tag:    nt.Tag,
-		Title:  nt.Title,
+		Key:    nt.Key,
 		Dev:    nt.Dev,
 		Notes:  nt.Notes,
 		Status: status,
@@ -62,7 +62,7 @@ type FetchTicketsRequest struct {
 
 type DeleteTicketRequest struct {
 	Username string `json:"username"`
-	Title    string `json:"title"`
+	Key      string `json:"key"`
 }
 
 type KillRepoRequest struct {
@@ -74,7 +74,7 @@ type UpdateStatusRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Repo     string `json:"repo"`
-	Title    string `json:"title"`
+	Key      string `json:"key"`
 	Status   string `json:"status"`
 }
 

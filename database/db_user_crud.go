@@ -90,7 +90,7 @@ func AssignTicketToUser(db *sql.DB, username string, newTicket models.Ticket) er
 	return nil
 }
 
-func DeleteTicketByTitle(db *sql.DB, username string, title string) error {
+func DeleteTicketByKey(db *sql.DB, username string, key string) error {
 	// fetch user data from db
 	userData, err := FetchUserData(db, username)
 	if err != nil {
@@ -103,7 +103,7 @@ func DeleteTicketByTitle(db *sql.DB, username string, title string) error {
 	for repoIndex, repo := range userData.Repos {
 		newTickets := make([]models.Ticket, 0, len(repo.Tickets))
 		for _, ticket := range repo.Tickets {
-			if ticket.Title == title {
+			if ticket.Key == key {
 				found = true
 				continue // skip ticket to delete
 			}
@@ -113,7 +113,7 @@ func DeleteTicketByTitle(db *sql.DB, username string, title string) error {
 	}
 
 	if !found {
-		return fmt.Errorf("ticket with title %q not found", title)
+		return fmt.Errorf("ticket with key %q not found", key)
 	}
 
 	// marshal updated data
@@ -226,7 +226,7 @@ func DeleteAllTickets(db *sql.DB, username string) error {
 	return nil
 }
 
-func UpdateTicketStatusByRepo(db *sql.DB, username string, repoName string, title string, newStatus string) error {
+func UpdateTicketStatusByRepo(db *sql.DB, username string, repoName string, key string, newStatus string) error {
 	// fetch user data from db
 	userData, err := FetchUserData(db, username)
 	if err != nil {
@@ -240,7 +240,7 @@ func UpdateTicketStatusByRepo(db *sql.DB, username string, repoName string, titl
 		if userData.Repos[repoIndex].Repo == repoName {
 			// search tickets inside this repo
 			for ticketIndex := range userData.Repos[repoIndex].Tickets {
-				if userData.Repos[repoIndex].Tickets[ticketIndex].Title == title {
+				if userData.Repos[repoIndex].Tickets[ticketIndex].Key == key {
 					userData.Repos[repoIndex].Tickets[ticketIndex].Status = newStatus
 					found = true
 					break
@@ -251,7 +251,7 @@ func UpdateTicketStatusByRepo(db *sql.DB, username string, repoName string, titl
 	}
 
 	if !found {
-		return fmt.Errorf("ticket with title %q in repo %q not found", title, repoName)
+		return fmt.Errorf("ticket with key %q in repo %q not found", key, repoName)
 	}
 
 	// marshal updated data
