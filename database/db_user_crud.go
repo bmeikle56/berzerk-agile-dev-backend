@@ -238,15 +238,51 @@ func UpdateTicketStatusByRepo(db *sql.DB, username string, repoName string, key 
 	// search for the specific repo
 	for repoIndex := range userData.Repos {
 		if userData.Repos[repoIndex].Repo == repoName {
-			// search tickets inside this repo
-			for ticketIndex := range userData.Repos[repoIndex].Tickets {
-				if userData.Repos[repoIndex].Tickets[ticketIndex].Key == key {
-					userData.Repos[repoIndex].Tickets[ticketIndex].Status = newStatus
+			repo := &userData.Repos[repoIndex]
+
+			// ensure we don’t already have another active ticket
+			if newStatus == "active" {
+				for _, t := range repo.Tickets {
+					if t.Status == "active" && t.Key != key {
+						return fmt.Errorf("ticket %q is already active in repo %q", t.Key, repoName)
+					}
+				}
+			}
+
+			// update ticket status
+			for ticketIndex := range repo.Tickets {
+				if repo.Tickets[ticketIndex].Key == key {
+					repo.Tickets[ticketIndex].Status = newStatus
 					found = true
 					break
 				}
 			}
-			break // stop after checking the matching repo
+
+			if !found {
+				break
+			}
+
+			// reorder: active ticket last (if any)
+			var active *models.Ticket
+			var reordered []models.Ticket
+			for _, t := range repo.Tickets {
+				if t.Status == "active" {
+					if active != nil {
+						// safeguard: shouldn’t happen, but just in case
+						return fmt.Errorf("multiple active tickets found in repo %q", repoName)
+					}
+					copyT := t
+					active = &copyT
+				} else {
+					reordered = append(reordered, t)
+				}
+			}
+			if active != nil {
+				reordered = append(reordered, *active)
+			}
+			repo.Tickets = reordered
+
+			break
 		}
 	}
 
