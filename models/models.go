@@ -18,7 +18,6 @@ type Repo struct {
 
 type Ticket struct {
 	Repo   string `json:"repo"`
-	Tag    string `json:"tag"`
 	Key    string `json:"key"`
 	Dev    string `json:"dev"`
 	Notes  string `json:"notes"`
@@ -28,16 +27,14 @@ type Ticket struct {
 // a status-less ticket
 type NewTicket struct {
 	Repo   string `json:"repo"`
-	Tag    string `json:"tag"`
 	Key    string `json:"key"`
-	Dev    string `json:"dev"` // remove later...
+	Dev    string `json:"dev"`
 	Notes  string `json:"notes"`
 }
 
 func (nt NewTicket) ToTicketWithStatus(status string) Ticket {
 	return Ticket{
 		Repo:   nt.Repo,
-		Tag:    nt.Tag,
 		Key:    nt.Key,
 		Dev:    nt.Dev,
 		Notes:  nt.Notes,
