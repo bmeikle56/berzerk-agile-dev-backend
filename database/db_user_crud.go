@@ -262,9 +262,10 @@ func UpdateTicketStatusByRepo(db *sql.DB, username string, repoName string, key 
 				break
 			}
 
-			// reorder: active ticket last (if any)
+			// reorder: active ticket first (if any)
 			var active *models.Ticket
 			var reordered []models.Ticket
+
 			for _, t := range repo.Tickets {
 				if t.Status == "active" {
 					if active != nil {
@@ -273,15 +274,21 @@ func UpdateTicketStatusByRepo(db *sql.DB, username string, repoName string, key 
 					}
 					copyT := t
 					active = &copyT
-				} else {
-					reordered = append(reordered, t)
 				}
 			}
+
+			// place active ticket first
 			if active != nil {
 				reordered = append(reordered, *active)
 			}
-			repo.Tickets = reordered
 
+			for _, t := range repo.Tickets {
+				if t.Status != "active" {
+					reordered = append(reordered, t)
+				}
+			}
+
+			repo.Tickets = reordered
 			break
 		}
 	}
